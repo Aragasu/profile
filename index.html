@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>aragasu</title>
+  <meta name="description" content="aragasu — Developer aus Deutschland.">
+  <meta name="theme-color" content="#08080a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="images/avatar.svg">
+</head>
+<body>
+  <main class="profile">
+    <div class="profile__avatar">
+      <span class="profile__ring" aria-hidden="true"></span>
+      <img id="avatar" src="images/avatar.svg" alt="avatar" width="96" height="96">
+    </div>
+
+    <h1 class="profile__name" id="name">aragasu</h1>
+    <p class="profile__desc" id="description"></p>
+
+    <div class="profile__followers">
+      <span class="profile__count" id="followers">0</span>
+      <span class="profile__label">followers</span>
+    </div>
+  </main>
+
+  <script>
+    // ── Customize here ──────────────────────────────────────────
+    const CONFIG = {
+      name: 'aragasu',
+      description: 'yapper: aragasu',
+      avatar: 'avatar.svg',
+      followers: 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002
+    };
+    // ────────────────────────────────────────────────────────────
+
+    const els = {
+      name: document.getElementById('name'),
+      description: document.getElementById('description'),
+      avatar: document.getElementById('avatar'),
+      followers: document.getElementById('followers')
+    };
+
+    function setProfile({ name, description, avatar }) {
+      if (typeof name === 'string') {
+        els.name.textContent = name;
+        document.title = name;
+      }
+      if (typeof description === 'string') els.description.textContent = description;
+      if (typeof avatar === 'string' && avatar.trim()) els.avatar.src = avatar;
+    }
+
+    function animateCount(target) {
+      const count = Number.isFinite(target) && target >= 0 ? Math.floor(target) : 0;
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced || count === 0) {
+        els.followers.textContent = count.toLocaleString('de-DE');
+        return;
+      }
+
+      const duration = 1100;
+      const start = performance.now();
+
+      function frame(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        els.followers.textContent = Math.round(count * eased).toLocaleString('de-DE');
+        if (t < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    setProfile(CONFIG);
+    animateCount(CONFIG.followers);
+  </script>
+</body>
+</html>
